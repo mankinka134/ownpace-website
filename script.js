@@ -28,19 +28,46 @@ let lineFilter="all", typeFilter="all", searchTerm="", onlyFavs=false;
 let openProductId=null;
 const lineLabels={noir:"01 / NOIR",atelier:"02 / ATELIER",terrain:"03 / TERRAIN"};
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+const conceptImageById = {
+ n01:"noir-black",n02:"noir-pants",n03:"noir-denim",n04:"noir-jacket",
+ a01:"atelier-bootcut",a02:"atelier-wide",a03:"atelier-zip",a04:"atelier-tee",
+ t01:"terrain-jacket",t02:"terrain-pants",t03:"terrain-fleece",t04:"terrain-outer"
+};
+function imageElement(p) {
+ const imageName=conceptImageById[p.id];
+ return imageName ? '<img class="source-image" alt="Візуалізація майбутнього виробу: '+escapeHtml(p.ua)+'" src="assets/'+imageName+'.jpg" loading="lazy" decoding="async">' : "";
+}
+function enhanceImages(scope=document) {
+ $(".source-image",scope).forEach(im=>{
+  if(im.complete){if(im.naturalWidth>0)im.classList.add("is-loaded");return;}
+  im.addEventListener("load",()=>im.classList.add("is-loaded"),{once:true});
+  im.addEventListener("error",()=>im.remove(),{once:true});
+ });
+}
+function enhancePackages(){
+ const map=[["noir","pack-noir"],["atelier","pack-atelier"],["terrain","pack-terrain"]];
+ map.forEach(([line,file])=>{
+  const scene=$(".package-"+line+" .package-scene");
+  if(!scene)return;
+  const probe=new Image();
+  probe.onload=()=>{scene.style.setProperty("--package-image",'url("assets/'+file+'.jpg")');scene.classList.add("has-package-photo");};
+  probe.src="assets/"+file+".jpg";
+ });
+}
+
 function garmentHtml(p){
  const cls=p.type==="zip"?"zip":p.type==="pants"?"pants":p.type==="denim"?"denim":p.type==="outer"?"outer":"tee";
  return '<div class="garment '+cls+'" data-tone="'+escapeHtml(p.tone)+'">'+(p.type==="zip"||p.type==="outer"?'<span class="zipline"></span>':"")+'<span class="mini-logo">OP.</span></div>';
 }
-function artHtml(p){return '<div class="product-art '+p.art+'" role="img" aria-label="Схематична ілюстрація: '+escapeHtml(p.ua)+'"><span class="product-badge">СКОРО У ПРОДАЖУ</span>'+garmentHtml(p)+'</div>';}
+function artHtml(p){return '<div class="product-art '+p.art+'" role="img" aria-label="Схематична ілюстрація: '+escapeHtml(p.ua)+'"><span class="product-badge">СКОРО У ПРОДАЖУ</span>'+garmentHtml(p)+imageElement(p)+'</div>';}
 function cardHtml(p){return '<article class="product-card" data-id="'+p.id+'" tabindex="0" aria-label="Відкрити '+escapeHtml(p.ua)+'">'+artHtml(p)+'<div class="product-meta"><div><h3>'+escapeHtml(p.title)+'</h3><p>'+escapeHtml(p.ua)+'</p></div><button class="wish-btn '+(favorites.has(p.id)?"is-saved":"")+'" type="button" data-wish="'+p.id+'" aria-label="'+(favorites.has(p.id)?"Прибрати з обраного":"Додати в обране")+'">'+(favorites.has(p.id)?"♥":"♡")+'</button></div><div class="card-bottom">'+lineLabels[p.line]+' / CONCEPT ONLY</div></article>';}
 function renderLine(line){const target=$("#"+line+"Grid");if(target)target.innerHTML=products.filter(p=>p.line===line).map(cardHtml).join("");}
 function filteredProducts(){return products.filter(p=>(lineFilter==="all"||p.line===lineFilter)&&(typeFilter==="all"||p.type===typeFilter)&&(!onlyFavs||favorites.has(p.id))&&(!searchTerm||(p.title+" "+p.ua+" "+p.desc+" "+p.color).toLowerCase().includes(searchTerm)));}
 function renderCatalog(){const filtered=filteredProducts();$("#catalogGrid").innerHTML=filtered.map(cardHtml).join("");$("#resultCount").textContent=filtered.length+" / 12 концептів"+(onlyFavs?" · ОБРАНЕ":"");$("#emptyState").hidden=filtered.length!==0;$$(".filter[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===lineFilter));$$(".filter[data-type]").forEach(b=>b.classList.toggle("active",b.dataset.type===typeFilter));}
-function renderAll(){for(const line of ["noir","atelier","terrain"])renderLine(line);renderCatalog();$("#favCount").textContent=String(favorites.size);}
+function renderAll(){for(const line of ["noir","atelier","terrain"])renderLine(line);renderCatalog();$("#favCount").textContent=String(favorites.size);enhanceImages();}
 function saveFavorites(){try{localStorage.setItem("ownpace.demo.favorites",JSON.stringify([...favorites]));}catch(_){}renderAll();}
 function toggleFavorite(id){if(favorites.has(id))favorites.delete(id);else favorites.add(id);saveFavorites();if(openProductId===id)updateDialogWish();}
-function openProduct(id){const p=products.find(x=>x.id===id);if(!p)return;openProductId=id;$("#dialogLine").textContent="OWNPACE / "+lineLabels[p.line];$("#dialogTitle").textContent=p.title;$("#dialogDesc").textContent=p.ua+". "+p.desc;$("#dialogColor").textContent=p.color;$("#dialogFit").textContent=p.fit;$("#dialogVisual").innerHTML=artHtml(p);updateDialogWish();const d=$("#productDialog");if(typeof d.showModal==="function")d.showModal();}
+function openProduct(id){const p=products.find(x=>x.id===id);if(!p)return;openProductId=id;$("#dialogLine").textContent="OWNPACE / "+lineLabels[p.line];$("#dialogTitle").textContent=p.title;$("#dialogDesc").textContent=p.ua+". "+p.desc;$("#dialogColor").textContent=p.color;$("#dialogFit").textContent=p.fit;$("#dialogVisual").innerHTML=artHtml(p);enhanceImages($("#dialogVisual"));updateDialogWish();const d=$("#productDialog");if(typeof d.showModal==="function")d.showModal();}
 function updateDialogWish(){const b=$("#dialogWish");if(!b||!openProductId)return;const on=favorites.has(openProductId);b.textContent=on?"♥ У ОБРАНОМУ":"♡ ЗБЕРЕГТИ В ОБРАНЕ";}
 function viewFromHash(){const key=location.hash.replace(/^#/,"").split("?")[0];return validViews.has(key)?key:"home";}
 function showView(view){
@@ -76,5 +103,5 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")layer.hidden=true;})
 for(const id of ["notifyButton","aboutPreview"]){$("#"+id).addEventListener("click",()=>$("#noticeDialog").showModal());}
 for(const id of ["closeNotice","closeNoticeButton"]){$("#"+id).addEventListener("click",()=>$("#noticeDialog").close());}
 $("#noticeDialog").addEventListener("click",e=>{if(e.target.id==="noticeDialog")e.target.close();});
-renderAll();showView(viewFromHash());
+renderAll();enhancePackages();showView(viewFromHash());
 if(["collections","noir-items","atelier-items","terrain-items"].includes(location.hash.slice(1)))window.dispatchEvent(new Event("hashchange"));
