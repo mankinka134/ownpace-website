@@ -1,0 +1,70 @@
+/* OWNPACE VISUAL REFRESH — source-based imagery, no more random fashion stock once assets are uploaded. */
+:root { --image-dark:#211f20; --image-wine:#6c2e3b; --image-olive:#3f4b3b; }
+body { background:#141617; }
+.site-header { border-bottom-color:#ffffff24; }
+.home-hero {
+  background-color:#161718;
+  background-image:linear-gradient(90deg,rgba(9,10,11,.98) 0%,rgba(9,10,11,.87) 24%,rgba(9,10,11,.36) 56%,rgba(9,10,11,.08) 100%),url("assets/hero-noir.jpg"),url("https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1800&q=80");
+  background-size:cover,auto 100%,cover;
+  background-position:center,right center,center;
+  background-repeat:no-repeat;
+}
+.home-hero:before{background:linear-gradient(0deg,rgba(6,8,9,.95),transparent 25%,transparent 80%,rgba(4,4,4,.08));}
+.home-hero-lines { border-color:#c3a4a32d;box-shadow:0 0 0 70px #fff1,0 0 0 140px #fff1 }
+.hero-slogan{color:#e8dfe1}
+.hero-copy h1{font-style:italic;transform:skewX(-5deg)}
+.hero-copy .button{border-left:5px solid #8d4250}
+.intro-bar {background:#e3ded7;}
+.world-card {border:1px solid #ffffff18;border-radius:2px}
+.noir-world .world-image{background-image:url("assets/hero-noir.jpg"),url("https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=900&q=80");filter:brightness(.82) grayscale(.2);background-position:center;background-size:cover}
+.atelier-world .world-image{background-image:url("assets/hero-atelier.jpg"),url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80");filter:saturate(.82);background-position:center;background-size:cover}
+.terrain-world .world-image{background-image:url("assets/hero-terrain.jpg"),url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80");filter:saturate(.79);background-position:center;background-size:cover}
+.world-card:hover .world-image{transform:scale(1.04)}
+.noir-hero .line-hero-bg{background-image:url("assets/hero-noir.jpg"),url("https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1800&q=80");background-position:74% center;background-size:cover;filter:brightness(.76) saturate(.7)}
+.noir-hero:before{background:linear-gradient(90deg,rgba(6,7,8,.95),rgba(6,7,8,.60) 45%,rgba(9,9,9,.06) 100%),linear-gradient(0deg,#1117,transparent)}
+.noir-hero .line-hero-content{max-width:720px}
+.noir-hero .line-hero-content h1{font-style:italic}
+.noir-strip{background:#3b222b;color:#e7cfd2}
+.noir-product-section{background:#1d1a1c}
+.noir-product-section .line-heading h2{color:#e8e1dc}
+.atelier-hero{background:#e0d6ce;color:#321e23}
+.atelier-photo{background-image:url("assets/hero-atelier.jpg"),url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80");background-position:center;background-size:cover}
+.atelier-copy{background:radial-gradient(circle at 0 15%,#f1e9e4,#d6c6bd 76%)}
+.atelier-statement{background:#ede9e5}
+.atelier-products{background:#e8e3df}
+.atelier-product-section .eyebrow{color:#7e3649}
+.terrain-hero{background-image:linear-gradient(90deg,rgba(14,24,18,.92),rgba(14,24,18,.53) 42%,rgba(14,24,18,.06)),url("assets/hero-terrain.jpg"),url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=85");background-position:center,right center,center;background-size:cover,auto 100%,cover;background-repeat:no-repeat}
+.terrain-hero:before{background:linear-gradient(0deg,#112019e0,transparent 28%)}
+.terrain-toolbar{background:#404c3c}
+.terrain-intro{background:#d5d6c9}
+.terrain-products{background:#313e30}
+.terrain-visual-photo{background-image:url("assets/hero-terrain.jpg"),url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80");background-position:center;background-size:cover}
+/* The real reference crops overlay former CSS packaging drawings only after load. */
+.package-scene.has-package-photo::after{content:"";position:absolute;z-index:5;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 55%),var(--package-image) center center/cover no-repeat;pointer-events:none}
+.package-atelier .package-scene.has-package-photo::after{background:var(--package-image) center/cover no-repeat}
+.package-terrain .package-scene.has-package-photo::after{background:var(--package-image) center/cover no-repeat}
+.package-noir{background:#201f20}
+.package-atelier{background:#eee5dd;color:#522f3a}
+.package-terrain{background:#3d4738;color:#f3ebdb}
+.package-copy h2{font-size:clamp(40px,4.2vw,75px)}
+.package-caption{font-style:italic;opacity:.68}
+.product-art {overflow:hidden;position:relative}
+.product-art .source-image{position:absolute;inset:0;z-index:3;width:100%;height:100%;object-fit:cover;background:transparent;opacity:0;transition:opacity .3s ease}
+.product-art .source-image.is-loaded {opacity:1}
+.product-art:has(.source-image.is-loaded)::after{z-index:4;color:#fff;text-shadow:0 1px 5px #000}
+.product-card:hover .source-image.is-loaded{transform:scale(1.035)}
+.product-art .source-image.is-loaded{transition:opacity .25s,transform .35s}
+.product-art .product-badge{z-index:6}
+.product-meta h3{font-size:12px;letter-spacing:.02em}
+.line-product-grid .product-art,.terrain-grid .product-art,.atelier-grid .product-art{height:clamp(240px,25vw,360px)}
+.catalog-grid .product-art {height:clamp(230px,26vw,360px)}
+.catalog-hero{background:linear-gradient(120deg,#201f21 30%,#453038 70%,#343e38 100%)}
+@media(max-width:760px){
+ .home-hero{background-position:center,right center,center;background-size:cover,auto 100%,cover}
+ .hero-copy h1{font-size:clamp(53px,12vw,90px)}
+ .noir-hero .line-hero-bg{background-position:54% center}
+ .atelier-photo{background-position:center}
+ .terrain-hero{background-size:cover,auto 100%,cover;background-position:center,63% center,center}
+ .package-scene.has-package-photo::after{background-position:center}
+ .line-product-grid .product-art,.terrain-grid .product-art,.atelier-grid .product-art,.catalog-grid .product-art{height:clamp(205px,48vw,285px)}
+}
